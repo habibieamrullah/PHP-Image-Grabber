@@ -10,14 +10,23 @@ if(isset($_POST['submit'])){
     $context = stream_context_create($opts);
     $u = $_POST['url'];
 	$url = file_get_html($u, false, $context);
-	$link = $url->find("a");
-	foreach($link as $lnk)
-	{
-	    if(!str_contains($result, "http") && !str_contains($result, "www")){ //i dont want external urls that usually has http or https or www on them
+	
+	if($_POST['wclass'] != ""){
+	    $link = $url->find(".content_click");
+    	foreach($link as $lnk)
+    	{
     	    $result = $lnk->href;
-    	    echo $result . ",";
-	    }
+        	echo $result . ",";
+    	}
+	}else{
+	    $link = $url->find("a");
+    	foreach($link as $lnk)
+    	{
+    	    $result = $lnk->href;
+        	echo $result . ",";
+    	}
 	}
+	
 	
 	$url->clear(); 
     unset($url);

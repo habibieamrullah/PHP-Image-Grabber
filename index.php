@@ -13,26 +13,80 @@
     </head>
     <body>
         
-        <h1>PHP Image Grabber</h1>
+        <h1><a href="index.php">PHP Image Grabber</a></h1>
         <p>Developed by <a href="https://www.youtube.com/@ThirteeNov/videos">ThirteeNov</a> (subscribe for more!)</p>
         
-        <input id="baseurl" placeholder="Enter base url here">
-        <button onclick="startGrab();">Start</button>
+        <h3>Auto scan sub urls</h3>
+        <input id="baseurl" placeholder="Enter base url here"><input id="startingurl" placeholder="Enter starting url here">
+        <button onclick="startGrab();">Start</button><button onclick="stopAutoScan()">Stop URL Scan</button>
         
+        <h3>Or, enter manually multiple urls separated by comma</h3>
+        <textarea id="urls"></textarea>
+        <button onclick="startMultipleUrls()">Start</button>
+        
+        <p>Use below input to get links with same class from a url:</p>
+        <h3>Find links on a url with class</h3>
+        <input id="findlinksfromurl" placeholder="URL"><input id="classname" placeholder="Class">
+        <button onclick="findLinks()">Find Links</button>
+        
+        <h3>Image Grab Result Log</h3>
         <div id="result"></div>
         
         
         
         <script>
-            var urlidx = 0;
-            var baseurl = "";
-            var moreurls = [];
-            function startGrab(){
-                baseurl = $("#baseurl").val();
-                //alert("Started!");
+
+            function findLinks(){
+                var url = $("#findlinksfromurl").val();
+                var classname = $("#classname").val();
                 $.post("urlcollector.php", {
                     submit : true,
-                    url : baseurl,
+                    url : url,
+                    wclass : classname,
+                }, function(data){
+                    
+                    $("#urls").val($("#urls").val() + data);
+
+                });
+            }
+            
+            var moreurls = [];
+            var manualidx = 0;
+            function startMultipleUrls(){
+                moreurls = $("#urls").val().split(",");
+                for(var i = 0; i < moreurls.length; i++){
+                    $("#result").prepend("<div class='urllist' id='urlidx"+i+"'>"+moreurls[i]+"</div>");
+                }
+                startManualGrab();
+            }
+            
+            function startManualGrab(){
+                if(manualidx < moreurls.length){
+                    grabImages(moreurls[manualidx], manualidx);
+                    manualidx++;
+                    setTimeout(function(){
+                        startManualGrab();
+                    },3000);
+                }else{
+                    alert("Manual Grab Done!");
+                }
+            }
+            
+        
+            var canscan = false;
+            var urlidx = 0;
+            var baseurl = "";
+            var startingurl = "";
+            function startGrab(){
+                canscan = true;
+                baseurl = $("#baseurl").val();
+                startingurl = $("#startingurl").val();
+                if(startingurl == ""){
+                    startingurl = baseurl;
+                }
+                $.post("urlcollector.php", {
+                    submit : true,
+                    url : startingurl,
                 }, function(data){
                     
                     processData(data);
@@ -40,15 +94,24 @@
                 });
             }
             
+            
+            function stopAutoScan(){
+                canscan = true;
+            }
+            
             function processData(data){
                 var data = data.split(",");
                 for(var i = 0; i < data.length; i++){
-                    if(data[i] != baseurl || data[i] != baseurl + "/"){
+                    var dt = data[i];
+                    dt = dt.replace("../", ""); // use this to replace some "ugly" things in some urls
+                    //console.log("got dt: " + dt);
+                    if(dt != baseurl && dt != baseurl + "/" && !dt.includes("www") && !dt.includes("http") ){
                         var urlresult;
-                        urlresult = baseurl + "/" + data[i];
+                        urlresult = baseurl + "/" + dt;
                         
                         //to avouid duplicated urls
                         var alreadyexists = false;
+                        
                         for(var z = 0; z < $(".urllist").length; z++){
                             if($(".urllist").eq(z).html() == urlresult){
                                 alreadyexists = true;
@@ -74,6 +137,7 @@
             var deepscanidx = 0;
             var deepscanstarted = false;
             function nextStep(){
+                
                 deepscanstarted = true;
                 if(deepscanidx < urlidx){
                     var durl = $("#urlidx"+deepscanidx).html();
@@ -88,15 +152,18 @@
                     },3000);
                     
                 }
+
             }
             
             function getDeeper(deeperurl){
-                $.post("urlcollector.php", {
-                    submit : true,
-                    url : deeperurl,
-                }, function(data){
-                    processData(data);
-                });
+                if(canscan){
+                    $.post("urlcollector.php", {
+                        submit : true,
+                        url : deeperurl,
+                    }, function(data){
+                        processData(data);
+                    });
+                }
             }
             
             function grabImages(url, idx){
