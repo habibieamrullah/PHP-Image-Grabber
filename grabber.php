@@ -13,14 +13,12 @@
     		$img_name = 'downloads/'.basename($s); //The important step in here. If you want to get file name of image and parse it to fuction save it to your disk (or host, of course!), you have to get file name of it, not a link.
     		file_put_contents($img_name, file_get_contents($s)); //Catch image and store it into place that specified before.
     	}
+    	
+    	$url->clear(); 
+        unset($url);
 	}
 	
-	//delete small images
-	/*
-	$size = getimagesize($path);
-    $width = $size[0];
-    $height = $size[1]; 
-	*/
+
 	
 ?>
 

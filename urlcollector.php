@@ -13,18 +13,12 @@ if(isset($_POST['submit'])){
 	$link = $url->find("a");
 	foreach($link as $lnk)
 	{
-	    $result = $lnk->href;
-	    echo $result . ",";
-	    /*
-	    if(str_contains($result, $u) || substr($result,0,1) == "/"){
-	        if($result != "/"){
-	            if(substr($result,0,1) == "/"){
-    	            echo "<div>" . $u . $result . "</div>";
-    	        }else{
-    	            echo "<div>" . $result . "</div>";
-    	        }
-	        } 
+	    if(!str_contains($result, "http") && !str_contains($result, "www")){ //i dont want external urls that usually has http or https or www on them
+    	    $result = $lnk->href;
+    	    echo $result . ",";
 	    }
-		*/
 	}
+	
+	$url->clear(); 
+    unset($url);
 }

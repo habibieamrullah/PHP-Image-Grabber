@@ -45,19 +45,21 @@
                 for(var i = 0; i < data.length; i++){
                     if(data[i] != baseurl || data[i] != baseurl + "/"){
                         var urlresult;
-                        if(data[i][0] == "/" && data[i] != "/" && data[i] != ""){
+                        urlresult = baseurl + "/" + data[i];
                         
-                            urlresult = baseurl + data[i];
-                        
-                        }else{
-                            urlresult = data[i];
+                        //to avouid duplicated urls
+                        var alreadyexists = false;
+                        for(var z = 0; z < $(".urllist").length; z++){
+                            if($(".urllist").eq(z).html() == urlresult){
+                                alreadyexists = true;
+                            }
                         }
                         
-                        if(urlresult.indexOf(baseurl) > -1){
+                        if(!alreadyexists){
                             $("#result").prepend("<div class='urllist' id='urlidx"+urlidx+"'>"+urlresult+"</div>");
                             urlidx++;
-                            //getDeeper(urlresult);
                         }
+                        
                     }
                 }
                 
@@ -75,7 +77,7 @@
                 deepscanstarted = true;
                 if(deepscanidx < urlidx){
                     var durl = $("#urlidx"+deepscanidx).html();
-                    console.log("Start deeper on urlidx" + deepscanidx + " url: " + durl + " of max urlidx " + urlidx);
+                    console.log("Start deeper on deepscanidx" + deepscanidx + " url: " + durl + " of max urlidx " + urlidx);
                     //scan deeper
                     getDeeper(durl);
                     //collect images
