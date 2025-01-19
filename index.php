@@ -103,27 +103,34 @@
                 var data = data.split(",");
                 for(var i = 0; i < data.length; i++){
                     var dt = data[i];
-                    //dt = dt.replace("../", ""); // use this to replace some "ugly" things in some urls
-                    //console.log("got dt: " + dt);
-                    //if(dt != baseurl && dt != baseurl + "/" && !dt.includes("www") && !dt.includes("http") ){
-                        var urlresult;
-                        urlresult = baseurl + "/" + dt;
-                        
-                        //to avouid duplicated urls
-                        var alreadyexists = false;
-                        
-                        for(var z = 0; z < $(".urllist").length; z++){
-                            if($(".urllist").eq(z).html() == urlresult){
-                                alreadyexists = true;
-                            }
-                        }
-                        
-                        if(!alreadyexists){
-                            $("#result").prepend("<div class='urllist' id='urlidx"+urlidx+"'>"+urlresult+"</div>");
-                            urlidx++;
-                        }
-                        
-                    //}
+
+					var urlresult = dt;
+					if(urlresult.indexOf("http") > -1){
+						if(urlresult.indexOf(baseurl) > -1){
+							
+						}else{
+							urlresult = "";
+						}
+					}else{
+						urlresult = baseurl + "/" + dt;
+					}
+					
+					if(urlresult != ""){
+						//to avouid duplicated urls
+						var alreadyexists = false;
+						
+						for(var z = 0; z < $(".urllist").length; z++){
+							if($(".urllist").eq(z).html() == urlresult){
+								alreadyexists = true;
+							}
+						}
+						
+						if(!alreadyexists){
+							$("#result").prepend("<div class='urllist' id='urlidx"+urlidx+"'>"+urlresult+"</div>");
+							urlidx++;
+						}
+					}
+
                 }
                 
                 if(!deepscanstarted){

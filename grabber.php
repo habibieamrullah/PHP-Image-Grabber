@@ -17,7 +17,7 @@
     	foreach($image as $img) //Reach to every single line <img> in the destination link
     	{
     		$s=$img->src; //Get link of image
-    		$img_name = 'downloads/'.uniqid().basename($s); //The important step in here. If you want to get file name of image and parse it to fuction save it to your disk (or host, of course!), you have to get file name of it, not a link.
+    		$img_name = 'downloads/'.uniqid()."-".basename($s); //The important step in here. If you want to get file name of image and parse it to fuction save it to your disk (or host, of course!), you have to get file name of it, not a link.
     		file_put_contents($img_name, file_get_contents($s)); //Catch image and store it into place that specified before.
     	}
     	
