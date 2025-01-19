@@ -96,7 +96,7 @@
             
             
             function stopAutoScan(){
-                canscan = true;
+                canscan = false;
             }
             
             function processData(data){
