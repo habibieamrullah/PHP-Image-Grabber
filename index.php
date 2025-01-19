@@ -103,9 +103,9 @@
                 var data = data.split(",");
                 for(var i = 0; i < data.length; i++){
                     var dt = data[i];
-                    dt = dt.replace("../", ""); // use this to replace some "ugly" things in some urls
+                    //dt = dt.replace("../", ""); // use this to replace some "ugly" things in some urls
                     //console.log("got dt: " + dt);
-                    if(dt != baseurl && dt != baseurl + "/" && !dt.includes("www") && !dt.includes("http") ){
+                    //if(dt != baseurl && dt != baseurl + "/" && !dt.includes("www") && !dt.includes("http") ){
                         var urlresult;
                         urlresult = baseurl + "/" + dt;
                         
@@ -123,7 +123,7 @@
                             urlidx++;
                         }
                         
-                    }
+                    //}
                 }
                 
                 if(!deepscanstarted){
