@@ -19,7 +19,8 @@
         <h3>Auto scan sub urls</h3>
         <input id="baseurl" placeholder="Enter base url here"><input id="startingurl" placeholder="Enter starting url here">
         <button onclick="startGrab();">Start</button><button onclick="stopAutoScan()">Stop URL Scan</button>
-        
+        <a href="#" onclick="scanLinksOnly()">Click Here To Scan Links Only</a>
+		
         <h3>Or, enter manually multiple urls separated by comma</h3>
         <textarea id="urls"></textarea>
         <button onclick="startMultipleUrls()">Start</button>
@@ -29,12 +30,18 @@
         <input id="findlinksfromurl" placeholder="URL"><input id="classname" placeholder="Class">
         <button onclick="findLinks()">Find Links</button>
         
-        <h3>Image Grab Result Log</h3>
+        <h3>URL and Image Grab Result Log</h3>
         <div id="result"></div>
         
         
         
         <script>
+		
+			var sonly = false;
+			function scanLinksOnly(){
+				sonly = true;
+				startGrab();
+			}
 
             function findLinks(){
                 var url = $("#findlinksfromurl").val();
@@ -151,9 +158,12 @@
                     console.log("Start deeper on deepscanidx" + deepscanidx + " url: " + durl + " of max urlidx " + urlidx);
                     //scan deeper
                     getDeeper(durl);
-                    //collect images
-                    grabImages(durl, deepscanidx);
-                    deepscanidx++;
+                    
+					//collect images
+					if(!sonly){
+						grabImages(durl, deepscanidx);
+					}
+					deepscanidx++;
                     setTimeout(function(){
                         nextStep();
                     },3000);
